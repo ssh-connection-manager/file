@@ -8,8 +8,8 @@ import (
 )
 
 type File struct {
-	path string
-	name string
+	Path string
+	Name string
 }
 
 func GetFullPath(filePath string, fileName string) string {
@@ -26,7 +26,7 @@ func (fl *File) IsExistFile() bool {
 }
 
 func (fl *File) CreateFile() error {
-	file := GetFullPath(fl.path, fl.name)
+	file := GetFullPath(fl.Path, fl.Name)
 
 	if _, err := os.Stat(file); errors.Is(err, os.ErrNotExist) {
 		dir := filepath.Dir(file)
@@ -50,7 +50,7 @@ func (fl *File) CreateFile() error {
 }
 
 func (fl *File) ReadFile() (string, error) {
-	file := GetFullPath(fl.path, fl.name)
+	file := GetFullPath(fl.Path, fl.Name)
 
 	f, err := os.Open(file)
 	if err != nil {
@@ -69,7 +69,7 @@ func (fl *File) ReadFile() (string, error) {
 }
 
 func (fl *File) WriteFile(rowData []byte) error {
-	file := GetFullPath(fl.path, fl.name)
+	file := GetFullPath(fl.Path, fl.Name)
 
 	err := ioutil.WriteFile(file, rowData, 0)
 	if err != nil {
