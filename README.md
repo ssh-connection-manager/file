@@ -1,1 +1,1 @@
-Package for work with files
+Module for work with files
