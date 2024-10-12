@@ -14,11 +14,7 @@ type File struct {
 
 func (fl *File) IsExistFile() bool {
 	_, err := fl.ReadFile()
-	if err != nil {
-		return false
-	}
-
-	return true
+	return err == nil
 }
 
 func (fl *File) fullPath() string {
