@@ -2,7 +2,7 @@ package file
 
 import (
 	"errors"
-	"io/ioutil"
+	"io"
 	"os"
 	"path/filepath"
 )
@@ -14,11 +14,7 @@ type File struct {
 
 func (fl *File) IsExistFile() bool {
 	_, err := fl.ReadFile()
-	if err != nil {
-		return false
-	}
-
-	return true
+	return err == nil
 }
 
 func (fl *File) fullPath() string {
@@ -60,7 +56,7 @@ func (fl *File) ReadFile() (string, error) {
 		err = f.Close()
 	}(f)
 
-	fContent, err := ioutil.ReadFile(file)
+	fContent, err := io.ReadAll(f)
 	if err != nil {
 		return "", err
 	}
@@ -71,7 +67,15 @@ func (fl *File) ReadFile() (string, error) {
 func (fl *File) WriteFile(rowData []byte) error {
 	file := fl.fullPath()
 
-	err := ioutil.WriteFile(file, rowData, 0)
+	f, err := os.Open(file)
+	if err != nil {
+		return err
+	}
+	defer func(f *os.File) {
+		err = f.Close()
+	}(f)
+
+	_, err = f.Write(rowData)
 	if err != nil {
 		return err
 	}
