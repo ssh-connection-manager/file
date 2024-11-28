@@ -25,7 +25,7 @@ func getHomeDir() string {
 		fmt.Println(err)
 	}
 
-	return usr.HomeDir + "/test/"
+	return usr.HomeDir + "qweeqwweqwqwe" + "/test/"
 }
 
 func TestCreateFile(t *testing.T) {
