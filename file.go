@@ -2,6 +2,7 @@ package file
 
 import (
 	"errors"
+	"fmt"
 	"io"
 	"os"
 	"path/filepath"
@@ -25,10 +26,9 @@ func (fl *File) CreateFile() error {
 	file := fl.fullPath()
 
 	if _, err := os.Stat(file); errors.Is(err, os.ErrNotExist) {
-		dir := filepath.Dir(file)
-
-		err = os.MkdirAll(dir, os.ModePerm)
+		err = os.MkdirAll(filepath.Dir(file), os.ModePerm)
 		if err != nil {
+			fmt.Println(1111)
 			return err
 		}
 
