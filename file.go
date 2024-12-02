@@ -25,9 +25,7 @@ func (fl *File) CreateFile() error {
 	file := fl.fullPath()
 
 	if _, err := os.Stat(file); errors.Is(err, os.ErrNotExist) {
-		dir := filepath.Dir(file)
-
-		err = os.MkdirAll(dir, os.ModePerm)
+		err = os.MkdirAll(filepath.Dir(file), os.ModePerm)
 		if err != nil {
 			return err
 		}
@@ -67,7 +65,7 @@ func (fl *File) ReadFile() (string, error) {
 func (fl *File) WriteFile(rowData []byte) error {
 	file := fl.fullPath()
 
-	f, err := os.Open(file)
+	f, err := os.OpenFile(file, os.O_APPEND|os.O_WRONLY, os.ModeAppend)
 	if err != nil {
 		return err
 	}
