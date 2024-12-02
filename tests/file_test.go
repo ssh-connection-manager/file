@@ -19,8 +19,9 @@ func randomString(count int) string {
 	return string(randomStr)
 }
 
-func getHomeDir() string {
+func getDirForTests() string {
 	usr, err := user.Current()
+
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -29,10 +30,11 @@ func getHomeDir() string {
 }
 
 func TestCreateFile(t *testing.T) {
-	homeDir := getHomeDir()
+	testDir := getDirForTests()
+
 	randomStr := randomString(5)
 
-	file := fl.File{Name: randomStr, Path: homeDir}
+	file := fl.File{Name: randomStr, Path: testDir}
 	err := file.CreateFile()
 	if err != nil {
 		t.Fatal("Error creating file")
@@ -44,13 +46,19 @@ func TestCreateFile(t *testing.T) {
 }
 
 func TestWriteToFile(t *testing.T) {
-	randomStr := randomString(5) + ".txt"
-	homeDir := getHomeDir()
+	testDir := getDirForTests()
 
-	file := fl.File{Name: randomStr, Path: homeDir}
+	randomStr := randomString(5) + ".txt"
+
+	file := fl.File{Name: randomStr, Path: testDir}
+
 	err := file.CreateFile()
 	if err != nil {
 		t.Fatal("Error creating file")
+	}
+
+	if !file.IsExistFile() {
+		t.Fatal("File dont created")
 	}
 
 	randomText := randomString(100)
@@ -71,19 +79,23 @@ func TestWriteToFile(t *testing.T) {
 
 func TestReadFile(t *testing.T) {
 	files := [7]fl.File{
-		{Name: randomString(5) + ".json", Path: getHomeDir()},
-		{Name: randomString(5) + ".txt", Path: getHomeDir()},
-		{Name: randomString(5) + ".PNG", Path: getHomeDir()},
-		{Name: randomString(5) + ".PDF", Path: getHomeDir()},
-		{Name: randomString(5) + ".PDF", Path: getHomeDir()},
-		{Name: randomString(5) + ".DOC", Path: getHomeDir()},
-		{Name: randomString(5), Path: getHomeDir()},
+		{Name: randomString(5) + ".json", Path: getDirForTests()},
+		{Name: randomString(5) + ".txt", Path: getDirForTests()},
+		{Name: randomString(5) + ".PNG", Path: getDirForTests()},
+		{Name: randomString(5) + ".PDF", Path: getDirForTests()},
+		{Name: randomString(5) + ".PDF", Path: getDirForTests()},
+		{Name: randomString(5) + ".DOC", Path: getDirForTests()},
+		{Name: randomString(5), Path: getDirForTests()},
 	}
 
 	for _, file := range files {
 		err := file.CreateFile()
 		if err != nil {
 			t.Fatal("Error creating file")
+		}
+
+		if !file.IsExistFile() {
+			t.Fatal("File dont created")
 		}
 
 		randomText := randomString(100)
@@ -94,6 +106,7 @@ func TestReadFile(t *testing.T) {
 		}
 
 		fileText, err := file.ReadFile()
+
 		if err != nil {
 			t.Fatal("Error read file")
 		}
@@ -101,5 +114,28 @@ func TestReadFile(t *testing.T) {
 		if fileText != randomText {
 			t.Fatalf("Error random text != text from file - is file %s", file.Path+file.Name)
 		}
+	}
+}
+
+func TestIsExistFile(t *testing.T) {
+	testDir := getDirForTests()
+
+	randomStr := randomString(5)
+	randomStr2 := randomString(5)
+
+	file := fl.File{Name: randomStr, Path: testDir}
+	fileWithDontExistName := fl.File{Name: randomStr2, Path: testDir}
+
+	err := file.CreateFile()
+	if err != nil {
+		t.Fatal("Error creating file")
+	}
+
+	if !file.IsExistFile() {
+		t.Fatal("Created file exists")
+	}
+
+	if fileWithDontExistName.IsExistFile() {
+		t.Fatal("None create file is exist")
 	}
 }
