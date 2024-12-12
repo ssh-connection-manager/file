@@ -65,7 +65,7 @@ func (fl *File) ReadFile() (string, error) {
 func (fl *File) WriteFile(rowData []byte) error {
 	file := fl.fullPath()
 
-	f, err := os.OpenFile(file, os.O_APPEND|os.O_WRONLY, os.ModeAppend)
+	f, err := os.OpenFile(file, os.O_WRONLY, 0666)
 	if err != nil {
 		return err
 	}
